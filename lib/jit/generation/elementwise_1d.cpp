@@ -53,6 +53,9 @@ std::string elementwise_1d::generate_impl(std::string const & suffix, expression
     case driver::CUDA:
       stream << "#include  \"vector.h\"" << std::endl; break;
     case driver::OPENCL:
+      if(tree.dtype()==FLOAT_TYPE){
+        stream<<"#pragma OPENCL EXTENSION cl_khr_fp16: enable"<<std::endl;
+      }
       stream << " __attribute__((reqd_work_group_size(" << ls0_ << "," << ls1_ << ",1)))" << std::endl; break;
   }
 
@@ -102,7 +105,7 @@ std::string elementwise_1d::generate_impl(std::string const & suffix, expression
   stream.dec_tab();
   stream << "}" << std::endl;
 
-//  std::cout << stream.str() << std::endl;
+  std::cout <<" stream: "<< stream.str() << std::endl;
   return stream.str();
 }
 

@@ -24,6 +24,7 @@ void test_impl(std::string const & ST, simple_vector_base<T> & cx, simple_vector
   if(queue.device().backend()==sc::driver::OPENCL)
   {
       cl_command_queue clqueue = queue.handle().cl();
+//      clblasSaxpy(N, a, cl(x), off(x), inc(x), cl(y), off(y), inc(y), 1, &clqueue, 0, NULL, NULL);
       ADD_TEST_1D_EW(DT+"AXPY"+ST, cy[i] = a*cx[i] + cy[i], BLAS<T>::F(clblasSaxpy, clblasDaxpy)(N, a, cl(x), off(x), inc(x), cl(y), off(y), inc(y), 1, &clqueue, 0, NULL, NULL));
       ADD_TEST_1D_EW(DT+"COPY"+ST, cy[i] = cx[i], BLAS<T>::F(clblasScopy, clblasDcopy)(N, cl(x), off(x), inc(x),  cl(y), off(y), inc(y),  1, &clqueue, 0, NULL, NULL));
       ADD_TEST_1D_EW(DT+"SCAL"+ST, cy[i] = a*cy[i], BLAS<T>::F(clblasSscal, clblasDscal)(N, a, cl(y), off(y), inc(y), 1, &clqueue, 0, NULL, NULL));

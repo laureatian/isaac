@@ -33,7 +33,8 @@ namespace isaac
 class scalar;
 class expression_tree;
 
-union ISAACAPI values_holder
+//union ISAACAPI values_holder
+struct ISAACAPI values_holder
 {
   int8_t int8;
   uint8_t uint8;

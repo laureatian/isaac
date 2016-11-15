@@ -85,6 +85,30 @@ std::string object::process(std::string const & in) const
       modified = modified || key.expand(res);
   }while(modified);
   //Attributes
+
+    if(in == "#scalartype #name_value"){
+//  for(auto const & key : attributes_){
+//  if(key.second == "half"){
+
+  for(auto const & key : attributes_){
+  if(key.second == "half"){
+     std::cout<<"half_right"<<std::endl;
+    std::cout<<"res_ps1:"<<res<<std::endl;
+  tools::find_and_replace(res, "#" + key.first, "float");
+  std::cout<<"res1:"<<key.first<<"  "<<key.second<<std::endl;
+  }else{
+     std::cout<<"res_ps2:"<<res<<std::endl;
+    tools::find_and_replace(res, "#" + key.first, key.second);
+    std::cout<<"res2:"<<key.first<<"  "<<key.second<<std::endl;
+  }
+  //  }
+  //  }
+    }
+  return res;
+    }
+
+
+
   for (auto const & key : attributes_)
     tools::find_and_replace(res, "#" + key.first, key.second);
   return res;
