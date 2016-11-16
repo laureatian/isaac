@@ -24,9 +24,10 @@
 
 #include <stdexcept>
 #include "isaac/exception/api.h"
-
+#include"myhalf.h"
 namespace isaac
 {
+using half = isaac::half;
 
 enum numeric_type
 {
@@ -40,7 +41,7 @@ enum numeric_type
   UINT_TYPE,
   LONG_TYPE,
   ULONG_TYPE,
-//  HALF_TYPE,
+  HALF_TYPE,
   FLOAT_TYPE,
   DOUBLE_TYPE
 };
@@ -58,7 +59,7 @@ inline std::string to_string(numeric_type const & type)
   case UINT_TYPE: return "uint";
   case LONG_TYPE:  return "long";
   case ULONG_TYPE: return "ulong";
-//  case HALF_TYPE : return "half";
+  case HALF_TYPE : return "half";
   case FLOAT_TYPE : return "float";
   case DOUBLE_TYPE : return "double";
   default : throw unknown_datatype(type);
@@ -67,6 +68,7 @@ inline std::string to_string(numeric_type const & type)
 
 inline numeric_type numeric_type_from_string(std::string const & name)
 {
+  if(name=="float16")    return HALF_TYPE;
   if(name=="float32") return FLOAT_TYPE;
   if(name=="float64") return DOUBLE_TYPE;
   throw std::invalid_argument("Invalid datatype: " + name);
@@ -80,7 +82,7 @@ inline unsigned int size_of(numeric_type type)
   case UCHAR_TYPE:
   case CHAR_TYPE: return 1;
 
-//  case HALF_TYPE:
+  case HALF_TYPE:
   case USHORT_TYPE:
   case SHORT_TYPE: return 2;
 
@@ -129,6 +131,7 @@ template<> struct to_numeric_type<long> { static const numeric_type value = LONG
 template<> struct to_numeric_type<unsigned long> { static const numeric_type value = ULONG_TYPE ; };
 template<> struct to_numeric_type<float> { static const numeric_type value = FLOAT_TYPE; };
 template<> struct to_numeric_type<double> { static const numeric_type value = DOUBLE_TYPE; };
+template<> struct to_numeric_type<half> { static const numeric_type value = HALF_TYPE; };
 
 template<class T> typename std::enable_if<std::is_arithmetic<T>::value, numeric_type>::type numeric_type_of(T) { return to_numeric_type<T>::value; }
 template<class T> typename std::enable_if<!std::is_arithmetic<T>::value, numeric_type>::type numeric_type_of(T const & x) { return x.dtype(); }

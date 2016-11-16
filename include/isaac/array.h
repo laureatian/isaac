@@ -35,13 +35,14 @@ namespace isaac
 
 class scalar;
 class view;
-
+using half=isaac::half;
 class ISAACAPI array_base
 {
   int_t dsize();
 public:
   //1D Constructors
   explicit array_base(int_t size1, numeric_type dtype = FLOAT_TYPE, driver::Context const & context = driver::backend::contexts::get_default());
+//  explicit array_base(int_t size1, numeric_type dtype = FLOAT_TYPE, driver::Context const & context = driver::backend::contexts::get_default());
   array_base(int_t size1, numeric_type dtype, driver::Buffer data, int_t start, int_t inc);
   template<typename DT>
   array_base(std::vector<DT> const & data, driver::Context const & context = driver::backend::contexts::get_default());
@@ -186,6 +187,7 @@ public:
   INSTANTIATE(unsigned long long)
   INSTANTIATE(float)
   INSTANTIATE(double)
+  INSTANTIATE(half)
 #undef INSTANTIATE
 };
 

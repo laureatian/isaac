@@ -24,6 +24,7 @@
 
 namespace isaac
 {
+using half = isaac::half;
 namespace random
 {
 
@@ -43,6 +44,7 @@ array rand(tuple const & shape, driver::Context const & context)
 
 #define INSTANTIATE(T) template array rand<T>(tuple const &, driver::Context const & context);
 INSTANTIATE(float)
+INSTANTIATE(half)
 INSTANTIATE(double)
 #undef INSTANTIATE
 

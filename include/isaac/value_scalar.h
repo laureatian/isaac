@@ -29,11 +29,11 @@
 
 namespace isaac
 {
-
+//using half = isaac::half;
+using half = isaac::half;
 class scalar;
 class expression_tree;
 
-//union ISAACAPI values_holder
 struct ISAACAPI values_holder
 {
   int8_t int8;
@@ -46,6 +46,7 @@ struct ISAACAPI values_holder
   uint64_t uint64;
   float float32;
   double float64;
+  half   float16;
 };
 
 class ISAACAPI value_scalar
@@ -66,6 +67,7 @@ public:
   ISAAC_INSTANTIATE(unsigned long long)
   ISAAC_INSTANTIATE(float)
   ISAAC_INSTANTIATE(double)
+  ISAAC_INSTANTIATE(half)
 #undef ISAAC_INSTANTIATE
   value_scalar(values_holder values, numeric_type dtype);
   explicit value_scalar(scalar const &);
@@ -89,6 +91,7 @@ public:
   INSTANTIATE(unsigned long long)
   INSTANTIATE(float)
   INSTANTIATE(double)
+  INSTANTIATE(half)
 #undef INSTANTIATE
 private:
   values_holder values_;
@@ -105,6 +108,7 @@ ISAACAPI value_scalar int64(int64_t v);
 ISAACAPI value_scalar uint64(uint64_t v);
 ISAACAPI value_scalar float32(float v);
 ISAACAPI value_scalar float64(double v);
+ISAACAPI value_scalar float16(isaac::half v);
 
 template<class T>
 ISAACAPI T cast(isaac::value_scalar const &);
@@ -121,6 +125,7 @@ ISAACAPI RET OPNAME (value_scalar const &, unsigned long );\
 ISAACAPI RET OPNAME (value_scalar const &, long long);\
 ISAACAPI RET OPNAME (value_scalar const &, unsigned long long);\
 ISAACAPI RET OPNAME (value_scalar const &, float );\
+ISAACAPI RET OPNAME (value_scalar const &, half );\
 ISAACAPI RET OPNAME (value_scalar const &, double);\
 ISAACAPI RET OPNAME (char   , value_scalar const &);\
 ISAACAPI RET OPNAME (unsigned char  , value_scalar const &);\
@@ -133,6 +138,7 @@ ISAACAPI RET OPNAME (unsigned long  , value_scalar const &);\
 ISAACAPI RET OPNAME (long long, value_scalar const &);\
 ISAACAPI RET OPNAME (unsigned long long, value_scalar const &);\
 ISAACAPI RET OPNAME (float  , value_scalar const &);\
+ISAACAPI RET OPNAME (isaac::half  , value_scalar const &);\
 ISAACAPI RET OPNAME (double , value_scalar const &);\
 ISAACAPI RET OPNAME (value_scalar const &, value_scalar const &);
 
@@ -182,7 +188,7 @@ ISAAC_DECLARE_UNARY_OPERATOR(trans)
 
 ISAACAPI std::ostream & operator<<(std::ostream & os, value_scalar const & s);
 ISAACAPI value_scalar cast(value_scalar const & in, numeric_type dtype);
-
 }
+
 
 #endif

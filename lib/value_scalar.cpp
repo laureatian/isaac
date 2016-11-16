@@ -45,7 +45,7 @@ void value_scalar::init(T const & s)
     case UINT_TYPE: values_.uint32 = (uint32_t)s; break;
     case LONG_TYPE: values_.int64 = (int64_t)s; break;
     case ULONG_TYPE: values_.uint64 = (uint64_t)s; break;
-//    case HALF_TYPE: values_.float16 = s; break;
+    case HALF_TYPE: values_.float16 = s; break;
     case FLOAT_TYPE: values_.float32 = (float)s; break;
     case DOUBLE_TYPE: values_.float64 = (double)s; break;
     default: throw unknown_datatype(dtype_);
@@ -66,6 +66,7 @@ INSTANTIATE(long long)
 INSTANTIATE(unsigned long long)
 INSTANTIATE(float)
 INSTANTIATE(double)
+INSTANTIATE(half)
 
 #undef INSTANTIATE
 
@@ -84,17 +85,29 @@ T value_scalar::cast() const
 {
   switch(dtype_)
   {
-    case CHAR_TYPE: return static_cast<T>(values_.int8);
-    case UCHAR_TYPE: return static_cast<T>(values_.uint8);
-    case SHORT_TYPE: return static_cast<T>(values_.int16);
-    case USHORT_TYPE: return static_cast<T>(values_.uint16);
-    case INT_TYPE: return static_cast<T>(values_.int32);
-    case UINT_TYPE: return static_cast<T>(values_.uint32);
-    case LONG_TYPE: return static_cast<T>(values_.int64);
-    case ULONG_TYPE: return static_cast<T>(values_.uint64);
-    case FLOAT_TYPE: return static_cast<T>(values_.float32);
-    case DOUBLE_TYPE: return static_cast<T>(values_.float64);
-    default: throw unknown_datatype(dtype_); //unreachable
+//    case CHAR_TYPE: return static_cast<T>(values_.int8);
+//    case UCHAR_TYPE: return static_cast<T>(values_.uint8);
+//    case SHORT_TYPE: return static_cast<T>(values_.int16);
+//    case USHORT_TYPE: return static_cast<T>(values_.uint16);
+//    case INT_TYPE: return static_cast<T>(values_.int32);
+//    case UINT_TYPE: return static_cast<T>(values_.uint32);
+//    case LONG_TYPE: return static_cast<T>(values_.int64);
+//    case ULONG_TYPE: return static_cast<T>(values_.uint64);
+//    case FLOAT_TYPE: return static_cast<T>(values_.float32);
+//    case DOUBLE_TYPE: return static_cast<T>(values_.float64);
+//    case HALF_TYPE:   return static_cast<T>(values_.float16);
+      case CHAR_TYPE:  { char t = values_.int8; return static_cast<T>(t);} break;
+      case UCHAR_TYPE: {unsigned char t = values_.uint8; return static_cast<T>(t);}break;
+      case SHORT_TYPE: {short t = values_.int16; return static_cast<T>(t);}break;
+      case USHORT_TYPE: {unsigned short t = values_.uint16; return static_cast<T>(t);}break;
+      case INT_TYPE: { int t = values_.int32; return static_cast<T>(t);}break;
+      case UINT_TYPE:{unsigned int t = values_.uint32; return static_cast<T>(t);}break;
+      case LONG_TYPE: { long t = values_.int64; return static_cast<T>(t);}break;
+      case ULONG_TYPE:{ unsigned long t = values_.uint64; return static_cast<T>(t);}break;
+      case FLOAT_TYPE: { float t = values_.float32; return static_cast<T>(t);}break;
+      case DOUBLE_TYPE: { double t = values_.float64; return static_cast<T>(t);}break;
+      case HALF_TYPE:   return (half)(values_.float16);
+      default: throw unknown_datatype(dtype_); //unreachable
   }
 }
 
@@ -112,6 +125,7 @@ T value_scalar::cast() const
   INSTANTIATE(unsigned long long)
   INSTANTIATE(float)
   INSTANTIATE(double)
+  INSTANTIATE(half)
 #undef INSTANTIATE
 
 value_scalar int8(int8_t v) { return value_scalar(v); }
@@ -124,6 +138,8 @@ value_scalar int64(int64_t v) { return value_scalar(v); }
 value_scalar uint64(uint64_t v) { return value_scalar(v); }
 value_scalar float32(float v) { return value_scalar(v); }
 value_scalar float64(double v) { return value_scalar(v); }
+value_scalar float16(half v) { return value_scalar(v); }
+
 
 #define VALUE(type, OP, x, y) (type)x OP y
 #define INSTANTIATE(NAME, LDEC, RDEC, OP)\
@@ -141,6 +157,7 @@ value_scalar NAME(LDEC, RDEC)\
   case ULONG_TYPE: return VALUE(unsigned long, OP, x, y);\
   case FLOAT_TYPE: return VALUE(float, OP, x, y);\
   case DOUBLE_TYPE: return VALUE(double, OP, x, y);\
+  case HALF_TYPE: return VALUE(half, OP, x, y);\
   default: throw unknown_datatype(x.dtype());\
   }\
 }
@@ -157,6 +174,7 @@ value_scalar NAME(LDEC, RDEC)\
   INSTANTIATE(NAME, value_scalar const & x, long long y, EXPR)\
   INSTANTIATE(NAME, value_scalar const & x, unsigned long long y, EXPR)\
   INSTANTIATE(NAME, value_scalar const & x, float y, EXPR)\
+  INSTANTIATE(NAME, value_scalar const & x, half y, EXPR)\
   INSTANTIATE(NAME, value_scalar const & x, double y, EXPR)\
   INSTANTIATE(NAME, char y,   value_scalar const & x, EXPR)\
   INSTANTIATE(NAME, unsigned char y,  value_scalar const & x, EXPR)\
@@ -169,7 +187,8 @@ value_scalar NAME(LDEC, RDEC)\
   INSTANTIATE(NAME, long long y,   value_scalar const & x, EXPR)\
   INSTANTIATE(NAME, unsigned long long y,  value_scalar const & x, EXPR)\
   INSTANTIATE(NAME, float y,  value_scalar const & x, EXPR)\
-  INSTANTIATE(NAME, double y, value_scalar const & x, EXPR)
+  INSTANTIATE(NAME, double y, value_scalar const & x, EXPR)\
+  INSTANTIATE(NAME, half y, value_scalar const & x, EXPR)\
 
 INSTANTIATE_ALL(operator+, +)
 INSTANTIATE_ALL(operator-, -)
@@ -185,12 +204,12 @@ INSTANTIATE_ALL(operator/, /)
 
 #undef VALUE
 #define VALUE(type, OP, x, y) OP((type)x,(type)y)
-INSTANTIATE_ALL(max, std::max)
-INSTANTIATE_ALL(min, std::min)
+//INSTANTIATE_ALL(max, std::max)
+//INSTANTIATE_ALL(min, std::min)
 
 #undef VALUE
 #define VALUE(type, OP, x, y) OP((type)x, y)
-INSTANTIATE_ALL(pow, std::pow)
+//INSTANTIATE_ALL(pow, std::pow)
 
 #undef INSTANTIATE_ALL
 #undef INSTANTIATE
@@ -209,6 +228,7 @@ value_scalar cast(value_scalar const & in, numeric_type dtype)
     case ULONG_TYPE: return (unsigned long)(in);
     case FLOAT_TYPE: return (float)(in);
     case DOUBLE_TYPE: return (double)(in);
+    case HALF_TYPE:  return(half)(in);
     default: throw unknown_datatype(dtype); //unreachable
   }
 }
@@ -227,7 +247,9 @@ std::ostream & operator<<(std::ostream & os, value_scalar const & s)
     case ULONG_TYPE: return os << static_cast<unsigned long>(s);
     case FLOAT_TYPE: return os << static_cast<float>(s);
     case DOUBLE_TYPE: return os << static_cast<double>(s);
-    default: throw unknown_datatype(s.dtype());;
+//    case HALF_TYPE:  return os << static_cast<half>(s);
+    case HALF_TYPE:  return os << (unsigned short)s.values().float16;
+    default: throw unknown_datatype(s.dtype());
   }
 }
 

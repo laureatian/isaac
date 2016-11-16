@@ -99,6 +99,7 @@ std::string to_string(operation_type type)
     case CAST_ULONG_TYPE : return "(ulong)";
     case CAST_FLOAT_TYPE : return "(float)";
     case CAST_DOUBLE_TYPE : return "(double)";
+    case CAST_HALF_TYPE: return "(half)";
 
     //dot
     case GEMM_NN_TYPE: return "matmatNN";
@@ -151,6 +152,7 @@ bool is_cast(operation_type op)
       || op == CAST_ULONG_TYPE
       || op == CAST_FLOAT_TYPE
       || op == CAST_DOUBLE_TYPE
+      || op == CAST_HALF_TYPE
       ;
 }
 

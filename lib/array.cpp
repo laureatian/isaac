@@ -48,7 +48,8 @@ INSTANTIATE(unsigned long);\
 INSTANTIATE(long long);\
 INSTANTIATE(unsigned long long);\
 INSTANTIATE(float);\
-INSTANTIATE(double);
+INSTANTIATE(double);\
+INSTANTIATE(half);
 
 //General
 array_base::array_base(tuple const & shape, numeric_type dtype, int_t start, tuple const & stride, driver::Buffer const & data) :
@@ -216,6 +217,7 @@ INSTANTIATE(long long);
 INSTANTIATE(unsigned long long);
 INSTANTIATE(float);
 INSTANTIATE(double);
+INSTANTIATE(half);
 #undef INSTANTIATE
 
 
@@ -371,6 +373,7 @@ scalar::scalar(value_scalar value, driver::Context const & context) : array_base
     case ULONG_TYPE: detail::copy(context_, data_, (unsigned long)value); break;
     case FLOAT_TYPE: detail::copy(context_, data_, (float)value); break;
     case DOUBLE_TYPE: detail::copy(context_, data_, (double)value); break;
+    case HALF_TYPE:   detail::copy(context_, data_, (half)value);break;
     default: throw unknown_datatype(dtype_);
   }
 }
@@ -400,6 +403,7 @@ void scalar::inject(values_holder & v) const
       HANDLE_CASE(ULONG_TYPE, uint64);
       HANDLE_CASE(FLOAT_TYPE, float32);
       HANDLE_CASE(DOUBLE_TYPE, float64);
+      HANDLE_CASE(HALF_TYPE, float16);
       default: throw unknown_datatype(dtype_);
     }
   #undef HANDLE_CASE
@@ -411,21 +415,36 @@ TYPE scalar::cast() const
   values_holder v;
   inject(v);
 
-#define HANDLE_CASE(DTYPE, VAL) case DTYPE: return static_cast<TYPE>(v.VAL)
+//#define HANDLE_CASE(DTYPE, VAL) case DTYPE: return static_cast<TYPE>(v.VAL)
+//#define HANDLE_CASE(FLOAT_TYPE) case
+
 
   switch(dtype_)
   {
-    HANDLE_CASE(CHAR_TYPE, int8);
-    HANDLE_CASE(UCHAR_TYPE, uint8);
-    HANDLE_CASE(SHORT_TYPE, int16);
-    HANDLE_CASE(USHORT_TYPE, uint16);
-    HANDLE_CASE(INT_TYPE, int32);
-    HANDLE_CASE(UINT_TYPE, uint32);
-    HANDLE_CASE(LONG_TYPE, int64);
-    HANDLE_CASE(ULONG_TYPE, uint64);
-    HANDLE_CASE(FLOAT_TYPE, float32);
-    HANDLE_CASE(DOUBLE_TYPE, float64);
-    default: throw unknown_datatype(dtype_);
+//    HANDLE_CASE(CHAR_TYPE, int8);
+//    HANDLE_CASE(UCHAR_TYPE, uint8);
+//    HANDLE_CASE(SHORT_TYPE, int16);
+//    HANDLE_CASE(USHORT_TYPE, uint16);
+//    HANDLE_CASE(INT_TYPE, int32);
+//    HANDLE_CASE(UINT_TYPE, uint32);
+//    HANDLE_CASE(LONG_TYPE, int64);
+//    HANDLE_CASE(ULONG_TYPE, uint64);
+//    HANDLE_CASE(FLOAT_TYPE, float32);
+//    HANDLE_CASE(DOUBLE_TYPE, float64);
+//    HANDLE_CASE(HALF_TYPE, float16);
+
+  case CHAR_TYPE:    { char t = v.int8;return t;} break;
+  case UCHAR_TYPE: { unsigned char t = v.uint8;return t;} break;
+  case SHORT_TYPE:{ short t = v.int16;return t;} break;
+  case USHORT_TYPE:{ unsigned short t = v.uint16;return t;} break;
+  case INT_TYPE:{ int t = v.int32;return t;} break;
+  case UINT_TYPE:{ unsigned int t = v.uint32;return t;} break;
+  case LONG_TYPE: {long t = v.int64;return t;} break;
+  case ULONG_TYPE:{ unsigned long t =  v.uint64;return t;} break;
+  case FLOAT_TYPE:{float t = v.float32;return t;} break;
+  case DOUBLE_TYPE: { double t = v.float64;return t;} break;
+  case HALF_TYPE: (half)(v.float16);
+  default: throw unknown_datatype(dtype_);
   }
 #undef HANDLE_CASE
 
@@ -454,6 +473,7 @@ scalar& scalar::operator=(value_scalar const & s)
     HANDLE_CASE(ULONG_TYPE, unsigned long)
     HANDLE_CASE(FLOAT_TYPE, float)
     HANDLE_CASE(DOUBLE_TYPE, double)
+    HANDLE_CASE(HALF_TYPE, half)
     default: throw unknown_datatype(dtype_);
   }
 }
@@ -471,6 +491,7 @@ scalar& scalar::operator=(value_scalar const & s)
   INSTANTIATE(unsigned long long)
   INSTANTIATE(float)
   INSTANTIATE(double)
+  INSTANTIATE(half)
 #undef INSTANTIATE
 
 std::ostream & operator<<(std::ostream & os, scalar const & s)
@@ -486,7 +507,7 @@ std::ostream & operator<<(std::ostream & os, scalar const & s)
     case UINT_TYPE: return os << static_cast<unsigned int>(s);
     case LONG_TYPE: return os << static_cast<long>(s);
     case ULONG_TYPE: return os << static_cast<unsigned long>(s);
-//    case HALF_TYPE: return os << static_cast<half>(s);
+    case HALF_TYPE: return os << static_cast<half>(s);
     case FLOAT_TYPE: return os << static_cast<float>(s);
     case DOUBLE_TYPE: return os << static_cast<double>(s);
     default: throw unknown_datatype(s.dtype());
@@ -677,9 +698,10 @@ inline operation_type casted(numeric_type dtype)
     case UINT_TYPE: return CAST_UINT_TYPE;
     case LONG_TYPE: return CAST_LONG_TYPE;
     case ULONG_TYPE: return CAST_ULONG_TYPE;
-//    case FLOAT_TYPE: return CAST_HALF_TYPE;
+//    case HALF_TYPE: return CAST_HALF_TYPE;
     case FLOAT_TYPE: return CAST_FLOAT_TYPE;
     case DOUBLE_TYPE: return CAST_DOUBLE_TYPE;
+    case HALF_TYPE: return CAST_HALF_TYPE;
     default: throw unknown_datatype(dtype);
   }
 }
@@ -1057,6 +1079,7 @@ INSTANTIATE(long long);
 INSTANTIATE(unsigned long long);
 INSTANTIATE(float);
 INSTANTIATE(double);
+INSTANTIATE(half);
 
 #undef INSTANTIATE
 
@@ -1126,6 +1149,7 @@ std::ostream& operator<<(std::ostream & os, array_base const & a)
         ISAAC_PRINT_ELEMENT(ULONG_TYPE, unsigned long)
         ISAAC_PRINT_ELEMENT(FLOAT_TYPE, float)
         ISAAC_PRINT_ELEMENT(DOUBLE_TYPE, double)
+        ISAAC_PRINT_ELEMENT(HALF_TYPE, half)
         default: throw unknown_datatype(dtype);
     }
 #undef ISAAC_PRINT_ELEMENT

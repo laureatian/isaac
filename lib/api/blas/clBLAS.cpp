@@ -81,6 +81,7 @@ extern "C"
         return clblasSuccess; \
     }
 
+    MAKE_AXPY(H, sc::HALF_TYPE, cl_half)
     MAKE_AXPY(S, sc::FLOAT_TYPE, cl_float)
     MAKE_AXPY(D, sc::DOUBLE_TYPE, cl_double)
 
@@ -96,6 +97,7 @@ extern "C"
         return clblasSuccess;\
     }
 
+    MAKE_SCAL(H, sc::HALF_TYPE, cl_half)
     MAKE_SCAL(S, sc::FLOAT_TYPE, cl_float)
     MAKE_SCAL(D, sc::DOUBLE_TYPE, cl_double)
 
@@ -113,6 +115,7 @@ extern "C"
         return clblasSuccess;\
     }
 
+    MAKE_COPY(H, sc::HALF_TYPE,  cl_half)
     MAKE_COPY(S, sc::FLOAT_TYPE, cl_float)
     MAKE_COPY(D, sc::DOUBLE_TYPE, cl_double)
 
@@ -132,6 +135,7 @@ extern "C"
         return clblasSuccess; \
     }
 
+    MAKE_DOT(H, sc::HALF_TYPE, cl_half)
     MAKE_DOT(S, sc::FLOAT_TYPE, cl_float)
     MAKE_DOT(D, sc::DOUBLE_TYPE, cl_double)
 
@@ -148,6 +152,7 @@ extern "C"
         return clblasSuccess;\
     }
 
+    MAKE_ASUM(H, sc::HALF_TYPE, cl_half)
     MAKE_ASUM(S, sc::FLOAT_TYPE, cl_float)
     MAKE_ASUM(D, sc::DOUBLE_TYPE, cl_double)
 

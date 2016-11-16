@@ -62,6 +62,7 @@ driver::Program const & profiles::value_type::init(runtime::execution_handler co
   std::string srcs;
    for(unsigned int i = 0 ; i < templates_.size() ; ++i)
      srcs += templates_[i]->generate(tools::to_string(i), expression.x(), context.device());
+   std::cout<<"src"<<srcs<<std::endl;
    return cache_.add(context, pname, srcs);
 }
 
@@ -190,7 +191,7 @@ void profiles::import(std::string const & str, driver::CommandQueue const & queu
   document.Parse<0>(str.c_str());
   //Deserialize
   std::vector<std::string> operations = {"elementwise_1d", "reduce_1d", "elementwise_2d", "reduce_2d_rows", "reduce_2d_cols", "gemm_nn", "gemm_tn", "gemm_nt", "gemm_tt"};
-  std::vector<std::string> dtype = {"float32", "float64"};
+  std::vector<std::string> dtype = {"float32", "float64","float16"};
   for(auto & operation : operations)
   {
     const char * opcstr = operation.c_str();

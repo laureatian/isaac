@@ -25,4 +25,21 @@ else()
     foreach(NAME fusion)
         add_isaac_test("runtime" ${NAME})
     endforeach()
+
+
+
+
+    function(add_my_test DIRECTORY NAME)
+         set(OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/${DIRECTORY}")
+         add_executable(test-${NAME} ${DIRECTORY}/${NAME}.cpp)
+         add_test(${NAME} "test-${NAME}")
+         find_package( OpenCL REQUIRED )
+         include_directories( ${OPENCL_INCLUDE_DIRS} )
+         target_link_libraries(test-${NAME} ${OPENCL_LIBRARIES})
+         target_link_libraries(test-${NAME} isaac)
+    endfunction()
+
+    foreach(NAME mytest)
+        add_my_test("mtest" ${NAME})
+    endforeach()
 endif()
