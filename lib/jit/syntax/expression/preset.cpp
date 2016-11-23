@@ -90,6 +90,7 @@ gemm::args gemm::check(expression_tree::data_type const & tree, size_t root)
         bool is_add = right.binary_operator.op.type==ADD_TYPE;
         bool is_sub = right.binary_operator.op.type==SUB_TYPE;
         //Form X +- Y"
+//        std::cout<<"is_add, is_sub"<<is_add<<"  "<<is_sub<<std::endl;
         if(is_add || is_sub)
         {
             expression_tree::node const & rleft = tree[right.binary_operator.lhs];

@@ -81,9 +81,23 @@ extern "C"
         return clblasSuccess; \
     }
 
-    MAKE_AXPY(H, sc::HALF_TYPE, cl_half)
+//    MAKE_AXPY(H, sc::HALF_TYPE, cl_half)
     MAKE_AXPY(S, sc::FLOAT_TYPE, cl_float)
     MAKE_AXPY(D, sc::DOUBLE_TYPE, cl_double)
+
+   clblasStatus clblasHaxpy(size_t N, cl_float alpha, \
+                            const cl_mem mx,  size_t offx, int incx, \
+                            cl_mem my, size_t offy, int incy, \
+                            cl_uint numCommandQueues, cl_command_queue *commandQueues, \
+                            cl_uint numEventsInWaitList, const cl_event *eventWaitList, \
+                            cl_event *events) \
+    { \
+        \
+        sc::array x((sc::int_t)N, sc::HALF_TYPE, sc::driver::Buffer(mx,false), (sc::int_t)offx, incx); \
+        sc::array y((sc::int_t)N, sc::HALF_TYPE, sc::driver::Buffer(my,false), (sc::int_t)offy, incy); \
+        execute(sc::assign(y, alpha*x + y), y.context(), numCommandQueues, commandQueues, numEventsInWaitList, eventWaitList, events); \
+        return clblasSuccess; \
+    }
 
     //SCAL
     #define MAKE_SCAL(TYPE_CHAR, TYPE_ISAAC, TYPE_CL) \

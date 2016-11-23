@@ -53,7 +53,7 @@ std::string elementwise_1d::generate_impl(std::string const & suffix, expression
     case driver::CUDA:
       stream << "#include  \"vector.h\"" << std::endl; break;
     case driver::OPENCL:
-      if(tree.dtype()==FLOAT_TYPE){
+      if(tree.dtype()==HALF_TYPE){
         stream<<"#pragma OPENCL EXTENSION cl_khr_fp16: enable"<<std::endl;
       }
       stream << " __attribute__((reqd_work_group_size(" << ls0_ << "," << ls1_ << ",1)))" << std::endl; break;
@@ -80,11 +80,19 @@ std::string elementwise_1d::generate_impl(std::string const & suffix, expression
 
     //Declares register to store results
     for(symbolic::leaf* sym: symbolic::extract<symbolic::leaf>(tree, symbols, assignments_lhs, false))
-      stream << sym->process(dtype + " #name;") << std::endl;
+    {stream << sym->process(dtype + " #name;") << std::endl;
+//      std::cout<<"dtypename#name   "<<dtype<<std::endl;
+//std::cout<<"dec1"<<sym->process(dtype + " #name;")<<std::endl;
+//std::cout<<"dec2"<<sym->process(dtype + " #name;")<<std::endl;
+    }
 
     //Load to registers
     for(symbolic::leaf* sym: symbolic::extract<symbolic::leaf>(tree, symbols, assignments_rhs, false))
-      stream << sym->process(dtype + " #name = " + append_width("loadv", vwidth) + "(i);") << std::endl;
+    {stream << sym->process(dtype + " #name = " + append_width("loadv", vwidth) + "(i);") << std::endl;
+//      std::cout<<"dtypename#name#loadv   "<<dtype<<std::endl;
+//std::cout<<"load1"<<sym->process(dtype + " #name = " + append_width("loadv", vwidth) + "(i);")<<std::endl;
+//std::cout<<"load2"<<sym->process(dtype + " #name = " + append_width("loadv", vwidth) + "(i);")<<std::endl;
+    }
 
     //Compute
     for(size_t idx: assignments)
@@ -105,7 +113,7 @@ std::string elementwise_1d::generate_impl(std::string const & suffix, expression
   stream.dec_tab();
   stream << "}" << std::endl;
 
-  std::cout <<" stream: "<< stream.str() << std::endl;
+//  std::cout <<" stream: "<< stream.str() << std::endl;
   return stream.str();
 }
 
@@ -137,6 +145,7 @@ void elementwise_1d::enqueue(driver::CommandQueue &, driver::Program const & pro
   kernel.setSizeArg(current_arg++, size);
   symbolic::set_arguments(expressions, kernel, current_arg);
   control.execution_options().enqueue(program.context(), kernel, global, local);
+
 }
 
 

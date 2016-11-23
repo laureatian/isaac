@@ -62,7 +62,7 @@ driver::Program const & profiles::value_type::init(runtime::execution_handler co
   std::string srcs;
    for(unsigned int i = 0 ; i < templates_.size() ; ++i)
      srcs += templates_[i]->generate(tools::to_string(i), expression.x(), context.device());
-   std::cout<<"src"<<srcs<<std::endl;
+//   std::cout<<"src"<<srcs<<std::endl;
    return cache_.add(context, pname, srcs);
 }
 
@@ -91,6 +91,7 @@ void profiles::value_type::execute(runtime::execution_handler const & expr)
   if(it!=labels_.end()){
     label = it->second;
   }
+#if 0
   //Not cached
   else if(predictor_){
     expression_tree::node const & root = tree[tree.root()];
@@ -111,6 +112,8 @@ void profiles::value_type::execute(runtime::execution_handler const & expr)
     std::sort(idx.begin(), idx.end(), [&perf](size_t i1, size_t i2) {return perf[i1] > perf[i2];});
     bool valid_found = false;
     for(size_t k = 0 ; k < std::min<size_t>(5, idx.size()) || !valid_found ; k++){
+      size_t tmp=std::min<size_t>(5,idx.size());
+      std::cout<<"minidx[]"<<tmp<<std::endl;
       size_t i = idx[k];
       if(templates_[i]->temporary_workspace(tree) > MAX_TEMPORARY_WORKSPACE){
         times.push_back(INFINITY);
@@ -137,6 +140,7 @@ void profiles::value_type::execute(runtime::execution_handler const & expr)
       *out = *bkp;
   }
   labels_.insert({x, label});
+#endif
   //Executes
   if(templates_[label]->temporary_workspace(expr.x()) > MAX_TEMPORARY_WORKSPACE)
     throw operation_not_supported_exception("Running this operation would require an overly large temporary.");
@@ -185,8 +189,10 @@ std::shared_ptr<templates::base> profiles::create(std::string const & template_n
 
 void profiles::import(std::string const & str, driver::CommandQueue const & queue)
 {
+//  std::cout<<"817str"<<str<<std::endl;
   map_type & result = cache_[queue];
   //Parse the JSON document
+//  str=fopen();
   rapidjson::Document document;
   document.Parse<0>(str.c_str());
   //Deserialize
@@ -207,6 +213,7 @@ void profiles::import(std::string const & str, driver::CommandQueue const & queu
           // Get profiles
           std::vector<std::shared_ptr<templates::base> > templates;
           rapidjson::Value const & profiles = document[opcstr][dtcstr]["profiles"];
+//          std::cout<<"profiles:"<<profiles.GetString()  <<std::endl;
           for (rapidjson::SizeType i = 0 ; i < profiles.Size() ; ++i){
             if(profiles[i].IsString())
                  templates.push_back(create(operation, profiles[i].GetString()));
@@ -249,6 +256,7 @@ profiles::map_type& profiles::init(driver::CommandQueue const & queue)
     str.reserve(ifs.tellg());
     ifs.seekg(0, std::ios::beg);
     str.assign((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+//    std::cout<<"import str:"<<str<<std::endl;
     import(str, queue);
   }
 

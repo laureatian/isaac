@@ -88,7 +88,7 @@ T value_scalar::cast() const
 //    case CHAR_TYPE: return static_cast<T>(values_.int8);
 //    case UCHAR_TYPE: return static_cast<T>(values_.uint8);
 //    case SHORT_TYPE: return static_cast<T>(values_.int16);
-//    case USHORT_TYPE: return static_cast<T>(values_.uint16);
+//    case ushort_TYPE: return static_cast<T>(values_.uint16);
 //    case INT_TYPE: return static_cast<T>(values_.int32);
 //    case UINT_TYPE: return static_cast<T>(values_.uint32);
 //    case LONG_TYPE: return static_cast<T>(values_.int64);

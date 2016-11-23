@@ -1082,7 +1082,7 @@ clblasZcopy(
 clblasStatus
 clblasHaxpy(
     size_t N,
-    cl_half alpha,
+    cl_float alpha,
     const cl_mem X,
     size_t offx,
     int incx,

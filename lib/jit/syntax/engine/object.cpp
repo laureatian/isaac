@@ -77,6 +77,7 @@ object::~object()
 std::string object::process(std::string const & in) const
 {
   std::string res = in;
+//  std::cout<<"in:  "<<in<<std::endl;
   //Macros
   bool modified;
   do{
@@ -86,31 +87,49 @@ std::string object::process(std::string const & in) const
   }while(modified);
   //Attributes
 
-    if(in == "#scalartype #name_value"){
+//    if(in == "#scalartype #name_value"){
 //  for(auto const & key : attributes_){
 //  if(key.second == "half"){
 
-  for(auto const & key : attributes_){
-  if(key.second == "half"){
-     std::cout<<"half_right"<<std::endl;
-    std::cout<<"res_ps1:"<<res<<std::endl;
-  tools::find_and_replace(res, "#" + key.first, "float");
-  std::cout<<"res1:"<<key.first<<"  "<<key.second<<std::endl;
-  }else{
-     std::cout<<"res_ps2:"<<res<<std::endl;
-    tools::find_and_replace(res, "#" + key.first, key.second);
-    std::cout<<"res2:"<<key.first<<"  "<<key.second<<std::endl;
-  }
-  //  }
-  //  }
-    }
-  return res;
-    }
+//  for(auto const & key : attributes_){
+//  if(key.second == "half"){
+//     std::cout<<"half_right"<<std::endl;
+//    std::cout<<"res_ps1:"<<res<<std::endl;
+//  tools::find_and_replace(res, "#" + key.first, "float");
+//  std::cout<<"res1:"<<key.first<<"  "<<key.second<<std::endl;
+//  }else{
+//     std::cout<<"res_ps2:"<<res<<std::endl;
+//    tools::find_and_replace(res, "#" + key.first, key.second);
+//    std::cout<<"res2:"<<key.first<<"  "<<key.second<<std::endl;
+//  }
+//  //  }
+//  //  }
+////    }
+//  return res;
+//    }
+// bool flag = false;
+//if(in.find_first_of("#name = loadv")!= std::string::npos){
 
+//  for(auto const &key: attributes_){
+//if(key.second.find_first_of("half")!= std::string::npos){
+//flag = true;
+//  }
+//break;
+//  }
+//if(flag){
+//for(auto const &key: attributes_){
+//  if(key.second.find_first_of(""))
+//tools::find_and_replace(res, "#" + key.first, "half");
+//}
+//}
+//std::cout<<"res :"<<res<<std::endl;
+//return res;
+//}
 
 
   for (auto const & key : attributes_)
     tools::find_and_replace(res, "#" + key.first, key.second);
+//  std::cout<<"result :"<<res<<std::endl;
   return res;
 }
 

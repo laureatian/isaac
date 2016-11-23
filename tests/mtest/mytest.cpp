@@ -12,9 +12,8 @@
 
 
 
-using myhalf=isaac::half;
-//typedef unsigned short myhalf;
-//typedef float myhalf;
+//using myhalf=isaac::half;
+using myhalf =  half_float::half;
 void test_half(){
 int N = 10;
 //float alpha = 2.2f;
@@ -39,14 +38,17 @@ err = clGetContextInfo(context,CL_CONTEXT_DEVICES,deviceBufferSize,devices,NULL)
 commandeQueue = clCreateCommandQueue(context,devices[0],0,NULL);
 device = devices[0];
 delete devices;
-float x=1.2;
+float  x=1.0f;
 myhalf alpha=myhalf(x);
 myhalf result[10];
 myhalf a[10];
 myhalf b[10];
 for(int i=0;i<10;i++){
-  a[i]=0.5*i;
-  b[i]=2*i;
+ float  ai=0.5*i;
+ float  bi=2.0*i;
+ std::cout<<"aibi"<<ai<<"  "<<bi<<std::endl;
+  a[i]=myhalf(ai);
+  b[i]=myhalf(bi);
 }
 for(int i=0;i<10;i++){
   std::cout<<"a[i] "<<a[i]<<std::endl;
@@ -57,7 +59,7 @@ for(int i=0;i<10;i++){
 cl_mem am =clCreateBuffer(context,CL_MEM_READ_WRITE|CL_MEM_COPY_HOST_PTR,sizeof(myhalf)*10,a,NULL);
 cl_mem bm =clCreateBuffer(context,CL_MEM_READ_WRITE|CL_MEM_COPY_HOST_PTR,sizeof(myhalf)*10,b,NULL);
 //cl_mem cm = clCreateBuffer(context,CL_MEM_READ_WRITE,sizeof(myhalf)*10,NULL,NULL);
-int status =clblasHaxpy(10, alpha, am, 0, 1, bm , 0, 1, 1, &commandeQueue, 0, NULL, NULL);
+int status =clblasHaxpy(10, x, am, 0, 1, bm , 0, 1, 1, &commandeQueue, 0, NULL, NULL);
 std::cout<<"status"<<status<<std::endl;
 
 err = clEnqueueReadBuffer(commandeQueue,bm,CL_TRUE,0,10*sizeof(myhalf),result,0,NULL,NULL);
@@ -100,14 +102,14 @@ commandeQueue = clCreateCommandQueue(context,devices[0],0,NULL);
 
 device = devices[0];
 delete devices;
-float x=1.2;
+float x=2.0f;
 float alpha=float(x);
 float result[10];
 float a[10];
 float b[10];
 for(int i=0;i<10;i++){
   a[i]=0.5*i;
-  b[i]=2*i;
+  b[i]=2.0*i;
 }
 for(int i=0;i<10;i++){
   std::cout<<"a[i] "<<a[i]<<std::endl;
@@ -120,7 +122,7 @@ cl_mem bm =clCreateBuffer(context,CL_MEM_READ_WRITE|CL_MEM_COPY_HOST_PTR,sizeof(
 //cl_mem cm = clCreateBuffer(context,CL_MEM_READ_WRITE,sizeof(myhalf)*10,NULL,NULL);
 //clblasSaxpy(10, alpha, am, 0, 1, bm , 0, 1, 1, &commandeQueue, 0, NULL, NULL);
 int status=3;
-status =clblasSaxpy(10, alpha, am, 0, 1, bm , 0, 1, 1, &commandeQueue, 0, NULL, NULL);
+status =clblasSaxpy(10, x, am, 0, 1, bm , 0, 1, 1, &commandeQueue, 0, NULL, NULL);
 //status =clblasSaxpy(10, alpha, am, 0, 1, bm , 0, 1, 1, NULL, 0, NULL, NULL);
 sleep(5);
 std::cout<<"status"<<status<<std::endl;

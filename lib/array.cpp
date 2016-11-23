@@ -424,7 +424,7 @@ TYPE scalar::cast() const
 //    HANDLE_CASE(CHAR_TYPE, int8);
 //    HANDLE_CASE(UCHAR_TYPE, uint8);
 //    HANDLE_CASE(SHORT_TYPE, int16);
-//    HANDLE_CASE(USHORT_TYPE, uint16);
+//    HANDLE_CASE(ushort_TYPE, uint16);
 //    HANDLE_CASE(INT_TYPE, int32);
 //    HANDLE_CASE(UINT_TYPE, uint32);
 //    HANDLE_CASE(LONG_TYPE, int64);
