@@ -470,7 +470,7 @@ clblasZswap(
 clblasStatus
 clblasHscal(
     size_t N,
-    cl_half alpha,
+    cl_float alpha,
     cl_mem X,
     size_t offx,
     int incx,
@@ -2816,6 +2816,65 @@ clblasiZamax(
  * @ingroup BLAS1
  */
 /*@{*/
+
+/**
+ * @brief absolute sum of values of a vector containing half elements
+ *
+ * @param[in] N             Number of elements in vector \b X.
+ * @param[out] asum         Buffer object that will contain the absoule sum value
+ * @param[in] offAsum       Offset to absolute sum in \b asum buffer object.
+ *                          Counted in elements.
+ * @param[in] X             Buffer object storing vector \b X.
+ * @param[in] offx          Offset of first element of vector \b X in buffer object.
+ *                          Counted in elements.
+ * @param[in] incx          Increment for the elements of \b X. Must not be zero.
+ * @param[in] scratchBuff   Temporary cl_mem scratch buffer object of minimum size N
+ * @param[in] numCommandQueues    Number of OpenCL command queues in which the
+ *                                task is to be performed.
+ * @param[in] commandQueues       OpenCL command queues.
+ * @param[in] numEventsInWaitList Number of events in the event wait list.
+ * @param[in] eventWaitList       Event wait list.
+ * @param[in] events     Event objects per each command queue that identify
+ *                       a particular kernel execution instance.
+ *
+ * @return
+ *   - \b clblasSuccess on success;
+ *   - \b clblasNotInitialized if clblasSetup() was not called;
+ *   - \b clblasInvalidValue if invalid parameters are passed:
+ *     - \b N is zero, or
+ *     - either \b incx is zero, or
+ *     - the vector sizes along with the increments lead to
+ *       accessing outside of any of the buffers;
+ *   - \b clblasInvalidMemObject if any of \b X or \b asum or \b scratchBuff object is
+ *     Invalid, or an image object rather than the buffer one;
+ *   - \b clblasOutOfHostMemory if the library can't allocate memory for
+ *     internal structures;
+ *   - \b clblasInvalidCommandQueue if the passed command queue is invalid;
+ *   - \b clblasInvalidContext if a context a passed command queue belongs
+ *     to was released;
+ *   - \b clblasInvalidOperation if kernel compilation relating to a previous
+ *     call has not completed for any of the target devices;
+ *   - \b clblasCompilerNotAvailable if a compiler is not available;
+ *   - \b clblasBuildProgramFailure if there is a failure to build a program
+ *     executable.
+ *
+ * @ingroup ASUM
+ */
+
+clblasStatus
+clblasHasum(
+    size_t N,
+    cl_mem asum,
+    size_t offAsum,
+    const cl_mem X,
+    size_t offx,
+    int incx,
+    cl_mem scratchBuff,
+    cl_uint numCommandQueues,
+    cl_command_queue *commandQueues,
+    cl_uint numEventsInWaitList,
+    const cl_event *eventWaitList,
+    cl_event *events);
 
 /**
  * @brief absolute sum of values of a vector containing float elements

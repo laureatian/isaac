@@ -39,7 +39,7 @@ else()
          target_link_libraries(test-${NAME} isaac)
     endfunction()
 
-    foreach(NAME mytest)
+    foreach(NAME mytest testcopy testscal testdot testsum)
         add_my_test("mtest" ${NAME})
     endforeach()
 endif()

@@ -625,7 +625,7 @@ expression_tree OPNAME (array_base  const & x) \
 expression_tree OPNAME (expression_tree const & x) \
 { return expression_tree(x, invalid_node(), op_element(UNARY_ARITHMETIC, OP), &x.context(), x.dtype(), x.shape()); }
 
-DEFINE_ELEMENT_UNARY_OPERATOR((x.dtype()==FLOAT_TYPE || x.dtype()==DOUBLE_TYPE)?FABS_TYPE:ABS_TYPE,  abs)
+DEFINE_ELEMENT_UNARY_OPERATOR((x.dtype()==FLOAT_TYPE || x.dtype()==DOUBLE_TYPE || x.dtype()==HALF_TYPE)?FABS_TYPE:ABS_TYPE,  abs)
 DEFINE_ELEMENT_UNARY_OPERATOR(ACOS_TYPE, acos)
 DEFINE_ELEMENT_UNARY_OPERATOR(ASIN_TYPE, asin)
 DEFINE_ELEMENT_UNARY_OPERATOR(ATAN_TYPE, atan)

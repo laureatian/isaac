@@ -111,9 +111,19 @@ extern "C"
         return clblasSuccess;\
     }
 
-    MAKE_SCAL(H, sc::HALF_TYPE, cl_half)
+//    MAKE_SCAL(H, sc::HALF_TYPE, cl_half)
     MAKE_SCAL(S, sc::FLOAT_TYPE, cl_float)
     MAKE_SCAL(D, sc::DOUBLE_TYPE, cl_double)
+
+    clblasStatus clblasHscal(size_t N, cl_float  alpha,
+                             cl_mem mx, size_t offx, int incx,
+                             cl_uint numCommandQueues, cl_command_queue *commandQueues,
+                             cl_uint numEventsInWaitList, const cl_event *eventWaitList, cl_event *events)
+    {
+        sc::array x((sc::int_t)N, sc::HALF_TYPE, sc::driver::Buffer(mx,false), (sc::int_t)offx, incx);\
+        execute(sc::assign(x, alpha*x), x.context(), numCommandQueues, commandQueues, numEventsInWaitList, eventWaitList, events);
+        return clblasSuccess;
+    }
 
     //COPY
     #define MAKE_COPY(TYPE_CHAR, TYPE_ISAAC, TYPE_CL)\
